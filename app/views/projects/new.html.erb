@@ -1,0 +1,20 @@
+<h1>Create New Project</h1>
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<%= form_for(@project) do |f| %>
+
+			<%= render 'shared/error_message' %>
+
+			<%= f.label :name %>
+			<%= f.text_field :name, class: 'form-control' %>
+			
+			<%= f.label :description %>
+			<%= f.text_field :description, class: 'form-control' %>
+
+
+			
+			
+			<%= f.submit "Create Project", class: "btn btn-primary" %>
+		<% end %>
+	</div>
+</div>

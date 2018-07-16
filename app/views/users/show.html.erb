@@ -1,0 +1,10 @@
+<% if logged_in_manager? %>
+	<%= render 'manager' %>
+
+<% elsif logged_in_developer? %>
+	<%= render 'developer' %>
+	
+<% elsif logged_in_qa? %>
+	<%= render 'qa' %>
+	
+<% end %>

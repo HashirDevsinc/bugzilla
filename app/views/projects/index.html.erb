@@ -1,0 +1,23 @@
+
+
+<% if policy(Project).new? %>
+	<%= link_to "Create New Project", new_project_path %>
+<% end %>
+
+<% if @projects && !policy(Project).new? %>
+	<h3>No Proejcts Currently Assigned.</h3>
+
+<% else %>
+	<h1>All Projects</h1>
+
+	<%= will_paginate %>
+	
+	<ul class="project">
+		<% @projects.each do |project| %>
+			<%= render project %>
+		<% end %>
+	</ul>
+
+	<%= will_paginate %>
+
+<% end %>
