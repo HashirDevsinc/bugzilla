@@ -13,6 +13,11 @@ gem 'devise'
 
 gem 'pundit'
 
+
+gem 'carrierwave', '~> 1.0'
+gem 'rmagick'
+gem 'mini_magick'
+
 gem 'pg'
 
 gem 'will_paginate', '3.1.6'

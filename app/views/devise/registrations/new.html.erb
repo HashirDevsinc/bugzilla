@@ -28,8 +28,7 @@
 
   <div class="field">
     <%= f.label :role %>
-    <%= f.select :user_type, options_for_select([["Manager", "Manager"], ["Developer", "Dev"], ["QA", "QA"]],  class: 'form-control' ) %>
-    
+    <%= f.select(:user_type, [["Manager", "Manager"], ["Developer", "Dev"], ["QA", "QA"]], {}, {class: 'form-control' }) %>
   </div>
 
   <div class="actions">

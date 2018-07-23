@@ -1,0 +1,29 @@
+
+[1mFrom:[0m /home/dev/environment/bugzilla/app/controllers/issues_controller.rb @ line 22 IssuesController#create:
+
+    [1;34m18[0m: [32mdef[0m [1;34mcreate[0m
+    [1;34m19[0m: 	@project = [1;34;4mProject[0m.find(params[[33m:p_id[0m])
+    [1;34m20[0m: 
+    [1;34m21[0m: 	@issue = [1;34;4mIssue[0m.new(issue_params)
+ => [1;34m22[0m: 	binding.pry
+    [1;34m23[0m: 
+    [1;34m24[0m: 	[1;34m# issue_params = params[:issue][0m
+    [1;34m25[0m: 	[1;34m# @issue = @project.issues.new(issue_params)[0m
+    [1;34m26[0m: 	authorize @issue
+    [1;34m27[0m: 	@issue.update_attribute([33m:project_id[0m, @project.id)
+    [1;34m28[0m: 	@issue.update_attribute([33m:user_id[0m, current_user.id)
+    [1;34m29[0m: 
+    [1;34m30[0m: 	puts [31m[1;31m"[0m[31m====================================================[1;31m"[0m[31m[0m
+    [1;34m31[0m: 	puts @issue.inspect
+    [1;34m32[0m: 
+    [1;34m33[0m: 	binding.pry 
+    [1;34m34[0m:  	[32mif[0m @issue.save
+    [1;34m35[0m:  		puts [31m[1;31m"[0m[31m====================================================[1;31m"[0m[31m[0m
+    [1;34m36[0m:  		[1;34m# @issue.update_attribute(:u_id, current_user.id)[0m
+    [1;34m37[0m:  		flash[[33m:success[0m] = [31m[1;31m"[0m[31mReported![1;31m"[0m[31m[0m
+    [1;34m38[0m:  		redirect_to issues_path
+    [1;34m39[0m:  	[32melse[0m
+    [1;34m40[0m:  		render [31m[1;31m'[0m[31mnew[1;31m'[0m[31m[0m
+    [1;34m41[0m:  	[32mend[0m
+    [1;34m42[0m: [32mend[0m
+

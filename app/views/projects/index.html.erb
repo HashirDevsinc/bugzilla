@@ -1,10 +1,8 @@
-
-
 <% if policy(Project).new? %>
-	<%= link_to "Create New Project", new_project_path %>
+	<%= link_to "Create New Project", new_project_path, class: "btn btn-primary" %>
 <% end %>
 
-<% if @projects && !policy(Project).new? %>
+<% if !@projects %>
 	<h3>No Proejcts Currently Assigned.</h3>
 
 <% else %>
@@ -13,11 +11,37 @@
 	<%= will_paginate %>
 	
 	<ul class="project">
-		<% @projects.each do |project| %>
-			<%= render project %>
-		<% end %>
+		<table class="table">
+		 	<thead class="thead-dark">
+			 	<tr>
+				    <th>Project Name</th>
+				    <th>Project Description</th>
+				    <% if policy(Project).edit? %>
+			    		<th></th>
+			    		<th></th>
+						<% elsif policy(Project).bugs?%>
+							<th></th>
+			    	<% end %>
+		  		</tr>
+			</thead>
+			<% @projects.each do |project| %>
+			<tr>
+			  <td><%= link_to project.name, project %></td>
+			  <td><%= project.description %></td>
+						  
+				<% if policy(Project).edit? %>
+				 <td><%= link_to "edit", edit_project_path(project) %></td>
+				 <td><%= link_to "delete", project, method: :delete, data: { confirm: "You sure?" } %></td>
+				<% elsif policy(Project).bugs?%>
+					<td><%= link_to "Project Issues", issues_path(p_id: project.id) %></td>
+				<% end %>
+			</tr>
+			<% end %>
+		</table>
 	</ul>
 
 	<%= will_paginate %>
 
 <% end %>
+
+<%= link_to "Back", :back %>

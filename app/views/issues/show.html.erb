@@ -1,0 +1,44 @@
+<div class="container">
+	<div class="row">
+		<div class="col-md-6">
+		<table class="table">
+			<thead class="thead-dark">
+			 	<tr>
+				    <th>Issue Name</th>
+				    <th>Issue Description</th>
+				    <th>Issue Type</th>
+				    <th>Issue Status</th>
+				    <th>Reported</th>
+				</tr>
+			</thead>
+			<tr>
+				<td><%= @issue.title %></td>
+				<td><%= @issue.description %></td>
+				<td><%= @issue.issue_type %></td>
+				<td><%= @issue.status %></td>
+				<td><%= time_ago_in_words(@issue.created_at) %> ago.</td>
+
+					<% if policy(Issue).show? %>
+						<div class="row">
+							<div class="col-md-6 col-md-offset-3">
+								<% if @issue.d_id != @user.id %>
+									<td><%= link_to "Assign youself?", assign_bug_path(id: @issue.id), class: "btn btn-primary" %></td>
+								<% else %>
+									<td><%= link_to "Unassign youself?", unassign_bug_path(id: @issue.id), class: "btn btn-primary" %></td>
+								<% end %>
+
+							</div>
+						</div>
+					<% end %>
+				</tr>
+			</table>
+		</div>
+		<div class="col-md-6">
+			<% if @issue.img? %>
+				<%= image_tag @issue.img.url %>
+			<% end %>
+		</div>
+	</div>
+</div>
+
+<%= link_to "Back", :back %>

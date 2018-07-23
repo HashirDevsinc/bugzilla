@@ -1,0 +1,43 @@
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<table class="table">
+			<thead class="thead-dark">
+			 	<tr>
+				    <th>Issue Name</th>
+				    <th>Issue Description</th>
+				    <th>Issue Type</th>
+				    <th>Issue Status</th>
+				    <th>Reported</th>
+				    <th>Change Status</th>
+				</tr>
+			</thead>
+			<tr>
+				<td><%= @issue.title %></td>
+				<td><%= @issue.description %></td>
+				<td><%= @issue.issue_type %></td>
+				<td><%= @issue.status %></td>
+				<td><%= time_ago_in_words(@issue.created_at) %> ago.</td>
+				<%= form_for(@issue) do |f| %>
+
+					<% if @issue.issue_type == "Feature" %> 
+						<td>
+	    				<%= f.select :status, options_for_select([["Started", "Started"], ["Completed", "Completed"]],  class: 'form-control' ) %>
+	    				<%= f.submit "Update Status", class: "btn btn-primary" %></td>
+    				<% elsif @issue.issue_type == "Bug"%>
+	    				<td>
+	    				<%= f.select :status, options_for_select([["Started", "Started"], ["Resolved", "Resolved"]],  class: 'form-control' ) %>
+	    				<%= f.submit "Update Status", class: "btn btn-primary" %></td>
+
+    				<% end %>
+    			<% end %>
+    		</tr>
+    	</table>
+    	<% if @issue.img? %>
+		<li>
+			<%= image_tag @issue.img.url %>
+		</li>
+		<% end %>
+	</div>
+</div>
+
+<%= link_to "Back", :back %>

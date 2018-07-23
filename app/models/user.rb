@@ -4,7 +4,15 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 	
-	has_many :projects
+	has_many :projects, dependent: :destroy
+
+	has_many :issues
+
+
+	has_many :p_relationships, class_name: "Relationship", foreign_key: "u_id", dependent: :destroy
+
+	has_many :user_projects, through: :p_relationships, source: :project
+
 
 	# before_action :authenticate_user!
 

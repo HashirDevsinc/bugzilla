@@ -10,10 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_12_151345) do
+ActiveRecord::Schema.define(version: 2018_07_17_125326) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "issues", force: :cascade do |t|
+    t.string "title"
+    t.string "description"
+    t.string "deadline"
+    t.string "issue_type"
+    t.string "status"
+    t.string "img"
+    t.integer "d_id"
+    t.bigint "project_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_issues_on_project_id"
+    t.index ["user_id"], name: "index_issues_on_user_id"
+  end
 
   create_table "projects", force: :cascade do |t|
     t.string "name"
@@ -22,6 +38,16 @@ ActiveRecord::Schema.define(version: 2018_07_12_151345) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_projects_on_user_id"
+  end
+
+  create_table "relationships", force: :cascade do |t|
+    t.integer "p_id"
+    t.integer "u_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["p_id", "u_id"], name: "index_relationships_on_p_id_and_u_id", unique: true
+    t.index ["p_id"], name: "index_relationships_on_p_id"
+    t.index ["u_id"], name: "index_relationships_on_u_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -43,5 +69,7 @@ ActiveRecord::Schema.define(version: 2018_07_12_151345) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "issues", "projects"
+  add_foreign_key "issues", "users"
   add_foreign_key "projects", "users"
 end

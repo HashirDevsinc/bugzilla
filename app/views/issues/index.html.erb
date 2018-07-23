@@ -1,0 +1,53 @@
+
+<% if policy(Issue).new? %>
+	<%= link_to "Report New One", new_issue_path(p_id: @project.id), class: "btn btn-primary" %>
+<% end %>
+<h1><%= @project.name %></h1>
+
+<% if !@issues %>
+	<h2>No Issues.</h2>
+
+<% else %>
+	<h2>All Issues</h2>
+
+	<%= will_paginate %>	
+	
+	<ul class="issues">
+		<table class="table">
+
+		 	<thead class="thead-dark">
+			 	<tr>
+				    <th>Issue Name</th>
+				    <th>Issue Description</th>
+				    <th>Issue Type</th>
+				    <th>Issue Status</th>
+						<% @issues.each do |issue| %>
+							<% if policy(Issue).edit? && issue.d_id == @user.id%>
+							<th></th>
+			    		<% end %>
+						<% end %>
+		  		</tr>
+			</thead>
+			
+			
+			<% @issues.each do |issue| %>
+			<tr>
+				<td><%= link_to issue.title, issue %></td>
+				<td><%= issue.description %></td>
+				<td><%= issue.issue_type %></td>
+				<td><%= issue.status %></td>
+
+				<% if policy(Issue).edit? && issue.d_id == @user.id%>
+					<td><%= link_to "edit status", edit_issue_path(issue) %></td>
+				<% end %>
+			</tr>
+			<% end %>
+					
+		</table>
+	</ul>
+
+	<%= will_paginate %>
+
+<% end %>
+
+<%= link_to "Back", :back %>
