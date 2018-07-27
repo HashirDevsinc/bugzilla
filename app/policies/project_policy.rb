@@ -45,15 +45,7 @@ class ProjectPolicy < ApplicationPolicy
 		user.user_type == 'Manager'
 	end
 
-	def user_delete?
-				if user.user_type == 'Manager'
-			true
-		else
-			false
-		end
-	end
-
-	def assign_qa?
+	def user_unassign?
 		if user.user_type == 'Manager'
 			true
 		else
@@ -61,13 +53,29 @@ class ProjectPolicy < ApplicationPolicy
 		end
 	end
 
-	def assign_dev?
+	def add_resource?
 		if user.user_type == 'Manager'
 			true
 		else
 			false
 		end
 	end
+
+	# def assign_qa?
+	# 	if user.user_type == 'Manager'
+	# 		true
+	# 	else
+	# 		false
+	# 	end
+	# end
+
+	# def assign_dev?
+	# 	if user.user_type == 'Manager'
+	# 		true
+	# 	else
+	# 		false
+	# 	end
+	# end
 
 	def bugs?
 		if user.user_type != 'Manager'

@@ -10,7 +10,7 @@
 					    <th>Name</th>
 					    <th>Email</th>
 					    <th>Department</th>
-					    <% if policy(Project).user_delete? %>
+					    <% if policy(Project).user_unassign? %>
 					    <th></th>
 					    <% end %>
 					  </tr>
@@ -21,9 +21,9 @@
 						  <td> <%= user.email %></td>
 						  <td> <%= user.user_type %></td>
 						  
-						  <% if policy(Project).user_delete? %>
+						  <% if policy(Project).user_unassign? %>
 						  <td>
-						    <%= link_to "delete", user_delete_path(p_id: @project.id, u_id: user.id), method: "post", data: { confirm: "You sure?" } %></td>
+						    <%= link_to "Unassign", user_unassign_project_path(project_id: @project.id, user_id: user.id), method: "post", data: { confirm: "You sure?" } %></td>
 						  <% end %>
 						</tr>
 					<% end %>
@@ -37,15 +37,15 @@
 
 			<% if policy(Project).bugs? %>
 
-			<h2><%= link_to "Project Issues", issues_path(p_id: @project.id) %></h2>
+			<h2><%= link_to "Project Issues", project_issues_path(@project.id) %></h2>
 
 			<% end %>
 
-			<% if policy(Project).assign_dev? %>
-				<h2>Assign Developer to Project</h2>
+			<% if policy(Project).add_resource? %>
+				<h2>Assign Developer/QA to Project</h2>
 				<div class="row">
 					<div class="col-md-6 col-md-offset-3">
-						<%= form_tag(assign_d_path(p_id: @project.id), method: 'post', id: 'search-form') do %>
+						<%= form_tag(add_resource_path(project_id: @project.id), method: 'post', id: 'search-form') do %>
 
 							<div class="field">
 							    <%= label_tag :email %><br />
@@ -58,11 +58,18 @@
 				</div>
 			<% end %>
 
-			<% if policy(Project).assign_qa? %>
+		</div>
+	</div>
+</div>
+
+<%= link_to "Back", :back %>
+
+<% if false %>
+			<% if policy(Project).assign_resource? %>
 				<h2>Assign QA to Project</h2>
 				<div class="row">
 					<div class="col-md-6 col-md-offset-3">
-						<%= form_tag(assign_q_path(p_id: @project.id), method: 'post', id: 'search-form') do %>
+						<%= form_tag(assign_resource_path(project_id: @project.id), method: 'post', id: 'search-form') do %>
 
 							<div class="field">
 							    <%= label_tag :email %><br />
@@ -74,8 +81,4 @@
 					</div>
 				</div>
 			<% end %>
-		</div>
-	</div>
-</div>
-
-<%= link_to "Back", :back %>
+<% end %>

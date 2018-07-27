@@ -33,7 +33,7 @@
 				 <td><%= link_to "edit", edit_project_path(project) %></td>
 				 <td><%= link_to "delete", project, method: :delete, data: { confirm: "You sure?" } %></td>
 				<% elsif policy(Project).bugs?%>
-					<td><%= link_to "Project Issues", issues_path(p_id: project.id) %></td>
+					<td><%= link_to "Project Issues", project_issues_path(project.id) %></td>
 				<% end %>
 			</tr>
 			<% end %>

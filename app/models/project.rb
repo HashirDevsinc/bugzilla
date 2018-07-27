@@ -1,7 +1,7 @@
 class Project < ApplicationRecord
   belongs_to :user
 
-  has_many :u_relationships, class_name: "Relationship", foreign_key: "p_id", dependent: :destroy
+  has_many :u_relationships, class_name: "Relationship", foreign_key: "project_id", dependent: :destroy
  
   has_many :users, through: :u_relationships, source: :user
 

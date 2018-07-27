@@ -21,8 +21,12 @@ class IssuePolicy < ApplicationPolicy
 	end
 
 	def edit?
-		if user.user_type == 'Dev'
-			return true
+		if (user.user_type == 'Dev')
+			if user.id == record.d_id
+				return true
+			else
+				false
+			end
 		else 
 			return false
 		end

@@ -17,7 +17,7 @@
 				<td><%= @issue.issue_type %></td>
 				<td><%= @issue.status %></td>
 				<td><%= time_ago_in_words(@issue.created_at) %> ago.</td>
-				<%= form_for(@issue) do |f| %>
+				<%= form_for(@issue, url: project_issue_path, method: 'patch') do |f| %>
 
 					<% if @issue.issue_type == "Feature" %> 
 						<td>

@@ -9,9 +9,10 @@ class User < ApplicationRecord
 	has_many :issues
 
 
-	has_many :p_relationships, class_name: "Relationship", foreign_key: "u_id", dependent: :destroy
+	has_many :p_relationships, class_name: "Relationship", foreign_key: "user_id", dependent: :destroy
 
 	has_many :user_projects, through: :p_relationships, source: :project
+  
 
 
 	# before_action :authenticate_user!
@@ -33,9 +34,11 @@ class User < ApplicationRecord
 	# 	BCrypt::Password.create(string, cost: cost)
 	# end
 
-	# def manager?
-	# 	user_type == 'Manager'
-	# end
+	['Manager', 'QA', 'Dev'].each do |role|
+    define_method("#{role}?") do
+      self.user_type == role
+    end
+  end
 	# def developer?
 	# 	user_type == 'Developer'
 	# end

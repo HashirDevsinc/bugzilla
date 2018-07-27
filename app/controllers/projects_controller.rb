@@ -3,15 +3,15 @@ class ProjectsController < ApplicationController
 	before_action :authenticate_user!
 
 	def index
-		if current_user.user_type == "Manager"
+		# if current_user.user_type == "Manager"
+
+		if current_user.Manager?
 			@projects = current_user.projects.paginate(page: params[:page])
 		# elsif current_user.user_type == "QA"
 		# 	@projects = Project.all.paginate(page: params[:page])
 		else
 			@projects = current_user.user_projects.paginate(page: params[:page])
-
 		end
-		# Project.where(user_id: current_user.id).
 	end
 
 	def new
@@ -20,16 +20,15 @@ class ProjectsController < ApplicationController
 	end
 
 	def create
-	  	# project_params = params["project"]
-	  	@project = current_user.projects.new(project_params)
-	  	authorize @project
+  	@project = current_user.projects.new(project_params)
+  	authorize @project
 
-	  	if @project.save
-	  		flash[:notice] = "Your project has been created!"
-	  		redirect_to projects_path
-	  	else
-	  		render 'new'
-	  	end
+  	if @project.save
+  		flash[:notice] = "Your project has been created!"
+  		redirect_to projects_path
+  	else
+  		render 'new'
+  	end
 	end
 
 	def edit
@@ -41,17 +40,17 @@ class ProjectsController < ApplicationController
 		@project = Project.find(params[:id])
 		authorize @project
 
-		@project.update(project_params)
-		redirect_to projects_path
+		if @project.update(project_params)
+			redirect_to projects_path
+		else
+			flash[:alert] = "Updation Failed!"
+			render 'edit'
+		end
 	end
 
 	def show
 		@project = Project.find(params[:id])
 		@users = @project.users.where.not(user_type: "Manager")
-
-		# authorize @project
-		# @user = User.find_by(:email)
-		# @relation = Relationship.new
 	end
 
 	def destroy
@@ -63,10 +62,10 @@ class ProjectsController < ApplicationController
 		redirect_to projects_path
 	end
 
-	def user_delete
-		@relation = Relationship.where(p_id: params[:p_id], u_id: params[:u_id]).first
+	def user_unassign
+		@relation = Relationship.where(project_id: params[:project_id], user_id: params[:user_id]).first
 		
-		@project = Project.find(params[:p_id])
+		@project = Project.find(params[:project_id])
 
 		authorize @project
 
@@ -76,59 +75,101 @@ class ProjectsController < ApplicationController
 		redirect_to project_path(@project)
 	end
 
-	def assign_dev
-		@user = User.find_by(email: params[:email], user_type: "Dev")
-		@project = Project.find(params[:p_id])
+	def add_resource
+		@project = Project.find(params[:project_id])
 
 		authorize @project
 		
+		@user = User.find_by(email: params[:email])
+		
 		if @user
+			if @user.user_type == "Dev"
+
+				@c_user = Relationship.find_by(project_id: params[:project_id], user_id: @user.id)
+
+		  	if @c_user.blank?
+		  		Relationship.create(project_id: params[:project_id], user_id: @user.id)
+					flash[:notice] = "Your project has been assigned!"
+					redirect_to project_path(@project)
+				else
+					flash[:alert] = "Already Assigned to this project!"
+					redirect_to project_path(@project)
+				end
+			elsif @user.user_type == "QA"
+				
+				@c_user = Relationship.find_by(project_id: params[:project_id], user_id: @user.id)
+
+		  	if @c_user.blank?
+		  		Relationship.create(project_id: params[:project_id], user_id: @user.id)
+					flash[:notice] = "Your project has been assigned!"
+					redirect_to project_path(@project)
+				else
+					flash[:alert] = "Already Assigned to this project!"
+					redirect_to project_path(@project)
+				end
 			
-			@c_user = Relationship.find_by(u_id: @user.id)
+			else
+				flash[:alert] = "Developer/QA does not exist!"
+				redirect_to project_path(@project)
+			end
+		else
+			flash[:alert] = "User does not exist!"
+			redirect_to project_path(@project)
+		end
+	end
+
+	# def assign_dev
+	# 	@user = User.find_by(email: params[:email], user_type: "Dev")
+	# 	@project = Project.find(params[:project_id])
+
+	# 	authorize @project
+		
+	# 	if @user
+			
+	# 		@c_user = Relationship.find_by(project_id: params[:project_id], user_id: @user.id)
 	  	
-	  	if @c_user.blank?
-	  		Relationship.create(p_id: params[:p_id], u_id: @user.id)
-				flash[:notice] = "Your project has been assigned!"
-				redirect_to project_path(@project)
-			else
-				flash[:alert] = "Already Assigned!"
-				redirect_to project_path(@project)
-			end
-		else
-			flash[:alert] = "Developer does not exist!"
-			redirect_to project_path(@project)
-		end
+	#   	if @c_user.blank?
+	#   		Relationship.create(project_id: params[:project_id], user_id: @user.id)
+	# 			flash[:notice] = "Your project has been assigned!"
+	# 			redirect_to project_path(@project)
+	# 		else
+	# 			flash[:alert] = "Already Assigned to this project!"
+	# 			redirect_to project_path(@project)
+	# 		end
+	# 	else
+	# 		flash[:alert] = "Developer does not exist!"
+	# 		redirect_to project_path(@project)
+	# 	end
 
-	end
+	# end
 
-	def assign_qa
-		@user = User.find_by(email: params[:email], user_type: "QA")
-		@project = Project.find(params[:p_id])
+	# def assign_qa
+	# 	@user = User.find_by(email: params[:email], user_type: "QA")
+	# 	@project = Project.find(params[:project_id])
 
-		authorize @project
+	# 	authorize @project
 
-		if @user
-			@c_user = Relationship.find_by(u_id: @user.id) 
+	# 	if @user
 
-			if @c_user.blank?
-				Relationship.create(p_id: params[:p_id], u_id: @user.id)
-				flash[:notice] = "Your project has been assigned!"
-				redirect_to project_path(@project)
-			else
-				flash[:alert] = "Already Assigned!"
-				redirect_to project_path(@project)
-			end
-		else
-			flash[:alert] = "QA does not exist!"
-			redirect_to project_path(@project)
-		end
-		# Relationship.create(p_id: params[:p_id], u_id: @user.id)
-		# redirect_to projects_path
-	end
+	# 		@c_user = Relationship.find_by(project_id: params[:project_id], user_id: @user.id)
+
+	# 		if @c_user.blank?
+	# 			Relationship.create(project_id: params[:project_id], user_id: @user.id)
+	# 			flash[:notice] = "Your project has been assigned!"
+	# 			redirect_to project_path(@project)
+	# 		else
+	# 			flash[:alert] = "Already Assigned to this project!"
+	# 			redirect_to project_path(@project)
+	# 		end
+	# 	else
+	# 		flash[:alert] = "QA does not exist!"
+	# 		redirect_to project_path(@project)
+	# 	end
+	# end
 
 
 	private
-	  	def project_params
-	  		params.require(:project).permit(:name, :description)
-	  	end
+  	def project_params
+  		params.require(:project).permit(:name, :description)
+  	end
 end

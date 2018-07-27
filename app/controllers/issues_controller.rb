@@ -3,10 +3,10 @@ class IssuesController < ApplicationController
 	before_action :authenticate_user!
 	
 	def index
-		@project = Project.find(params[:p_id])
+		@project = Project.find(params[:project_id])
 
-		# @issues = Issue.all.paginate(page: params[:page])
-		@issues = Issue.all.where(project_id: @project.id).paginate(page: params[:page])
+		@issues = @project.issues.paginate(page: params[:page])
+		# @issues = Issue.where(project_id: params[:project_id]).paginate(page: params[:page])
 
 		@user = User.find(current_user.id)
 
@@ -14,7 +14,7 @@ class IssuesController < ApplicationController
 	end
 
 	def new
-		@project = Project.find(params[:p_id])
+		@project = Project.find(params[:project_id])
 		
 		@issue = Issue.new
 		authorize @issue
@@ -23,20 +23,13 @@ class IssuesController < ApplicationController
 	def create
 		@project = Project.find(params[:project_id])
 		
-		
-		if params[:issue][:issue_type] == "Bug"
-			params[:issue][:status] = params[:status_bug]
-		end
-
-		# @issue = Issue.new(issue_params)
-		@issue = Issue.new(project_id: @project.id, user_id: current_user.id, title: params[:issue][:title], img: params[:issue][:img])
+		@issue = current_user.issues.new(issue_params)
+		@issue.project_id = @project.id
 		authorize @issue
+	 
 	 	if @issue.save
-	 		issue_param = params[:issue]
-			@issue.update_attributes(description: issue_param[:description], deadline: issue_param[:deadline], issue_type: issue_param[:issue_type], status: issue_param[:status])
-	 		
 	 		flash[:notice] = "Reported!"
-	 		redirect_to issues_path(p_id: @project.id)
+	 		redirect_to project_issues_path
 	 	else
 	 		render 'new'
 	 	end
@@ -52,7 +45,10 @@ class IssuesController < ApplicationController
 
 		if @issue.update_attribute(:status, params[:issue][:status])
 			flash[:notice] = "status updated!"
-			redirect_to edit_issue_path(@issue.id)
+			redirect_to edit_project_issue_path
+		else
+			flash[:alert] = "Failed!"
+			redirect_to edit_project_issue_path
 		end
 	end
 
@@ -71,12 +67,12 @@ class IssuesController < ApplicationController
 
 		
 		if @issue.d_id
-			flash[:alert] = "already assigned to someone!"
-			redirect_to issue_path(id: @issue.id)
+			flash[:alert] = "Already assigned to someone!"
+			redirect_to project_issue_path(@project.id, @issue.id)
 		else
 			@issue.update_attribute(:d_id, current_user.id)
 			flash[:notice] = "Assigned!"
-			redirect_to issues_path(p_id: @project.id)
+			redirect_to project_issues_path(@project.id)
 		end
 	end
 
@@ -87,15 +83,35 @@ class IssuesController < ApplicationController
 		if @issue.d_id
 			@issue.update_attribute(:d_id, nil)
 			flash[:notice] = "Unassigned!"
-			redirect_to issues_path(p_id: @project.id)
+			redirect_to project_issues_path(@project.id)
 		else
 			flash[:alert] = "Already Unassigned!"
-			redirect_to issue_path(id: @issue.id)	
+			redirect_to project_issue_path(@project.id, @issue.id)	
 		end
 	end
 
-	# private
-	# 	def issue_params
-	# 		params.require(:issue).permit(:title, :description, :issue_type, :status, :img)
-	# 	end
+	private
+		def issue_params
+			params.require(:issue).permit(:title, :description, :deadline, :issue_type, :status, :img)
+		end
 end
+
+
+
+
+
+
+# @issue = Issue.new(project_id: @project.id, user_id: current_user.id, title: params[:issue][:title], img: params[:issue][:img])
+
+
+# issue_param = params[:issue]
+# @issue.update_attributes(description: issue_param[:description], deadline: issue_param[:deadline], issue_type: issue_param[:issue_type], status: issue_param[:status])
+# @issue.update_attributes(description: issue_param[:description], deadline: issue_param[:deadline], issue_type: issue_param[:issue_type], status: issue_param[:status])
+
+
+
+
+		
+		# if params[:issue][:issue_type] == "Bug"
+		# 	params[:issue][:status] = params[:status_bug]
+		# end
