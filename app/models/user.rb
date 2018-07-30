@@ -39,10 +39,5 @@ class User < ApplicationRecord
       self.user_type == role
     end
   end
-	# def developer?
-	# 	user_type == 'Developer'
-	# end
-	# def qa?
-	# 	user_type == 'QA'
-	# end
+	
 end

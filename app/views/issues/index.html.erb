@@ -22,7 +22,7 @@
 				    <th>Issue Type</th>
 				    <th>Issue Status</th>
 						<% @issues.each do |issue| %>
-							<% if policy(issue).edit? && issue.d_id == @user.id%>
+							<% if policy(issue).edit? %>
 							<th></th>
 			    		<% end %>
 						<% end %>

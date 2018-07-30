@@ -1,27 +1,15 @@
 class IssuePolicy < ApplicationPolicy
 
-	def index?
-		true
-	end
-
 	def new?
-		if user.user_type == 'QA'
-			true
-		else
-			false
-		end
+		user.QA?
 	end
 
 	def create?
-		if user.user_type == 'QA'
-			true
-		else
-			false
-		end
+		user.QA?
 	end
 
 	def edit?
-		if (user.user_type == 'Dev')
+		if user.Dev?
 			if user.id == record.d_id
 				return true
 			else
@@ -33,10 +21,10 @@ class IssuePolicy < ApplicationPolicy
 	end
 
 	def show?
-		if user.user_type == 'Dev'
-			return true
-		else 
-			return false
-		end
+		user.Dev?
+	end
+
+	def not_assigned?
+		record.d_id != user.id
 	end
 end

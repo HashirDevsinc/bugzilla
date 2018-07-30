@@ -21,7 +21,7 @@
 					<% if policy(Issue).show? %>
 						<div class="row">
 							<div class="col-md-6 col-md-offset-3">
-								<% if @issue.d_id != @user.id %>
+								<% if policy(@issue).not_assigned? %>
 									<td><%= link_to "Assign youself?", assign_bug_path(id: @issue.id), class: "btn btn-primary" %></td>
 								<% else %>
 									<td><%= link_to "Unassign youself?", unassign_bug_path(id: @issue.id), class: "btn btn-primary" %></td>

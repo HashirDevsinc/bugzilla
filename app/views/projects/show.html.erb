@@ -23,7 +23,7 @@
 						  
 						  <% if policy(Project).user_unassign? %>
 						  <td>
-						    <%= link_to "Unassign", user_unassign_project_path(project_id: @project.id, user_id: user.id), method: "post", data: { confirm: "You sure?" } %></td>
+						    <%= link_to "Unassign", user_unassign_project_path(user_id: user.id), method: "post", data: { confirm: "You sure?" } %></td>
 						  <% end %>
 						</tr>
 					<% end %>
@@ -45,7 +45,7 @@
 				<h2>Assign Developer/QA to Project</h2>
 				<div class="row">
 					<div class="col-md-6 col-md-offset-3">
-						<%= form_tag(add_resource_path(project_id: @project.id), method: 'post', id: 'search-form') do %>
+						<%= form_tag(add_resource_project_path, method: 'post', id: 'search-form') do %>
 
 							<div class="field">
 							    <%= label_tag :email %><br />
